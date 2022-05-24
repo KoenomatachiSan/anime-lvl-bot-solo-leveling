@@ -1,19 +1,39 @@
 import discord
 from discord.ext import commands
 import datetime
+import requests
 
 from urllib import parse, request
 import re
 
-bot = commands.Bot(command_prefix='>', description="This is a Helper Bot")
+#########################################
+# Import database config                #
+#########################################
+request_database = requests.get(url = "https://raw.githubusercontent.com/knmsn/anime-lvl-api/main/endpoints_db/solo_leveling.json", params = {})
+database = request_database.json()
+
+#########################################
+# Get .env variables
+#########################################
+lang_selected = "pt-br"
+
+#########################################
+# Set config database variables                         #
+#########################################
+forDB_command_prefix = database[lang_selected]['prefix']
+forDB_description=database[lang_selected]['description']
+# Set commands from DB
+forDB_command_help=database[lang_selected]['commands']['help']
+
+bot = commands.Bot(command_prefix=forDB_command_prefix, description=forDB_description)
+bot.remove_command('help')
 
 @bot.command()
-async def teste(ctx):
+async def help(ctx):
     embed=discord.Embed(title="[KNM-MANGA] Solo Leveling", url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg", description="Wiki bot, com curiosidades e informações a respeito do anime em geral.")
     embed.set_thumbnail(url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg")
-    embed.add_field(name="/knm solo-leveling personagens", value="Retornará uma lista com todos os personagens dos animes, podendo ser selecionados detalhes do mesmo.", inline=True)
-    embed.add_field(name="/knm solo-leveling personagem ~id~", value="Retornará um resumo com todas as informações a respeito do personagem solicitado.", inline=True)
-    embed.add_field(name="/knm solo-leveling help", value="Retornará uma lista de comandos e a descrição a respeito do bot.", inline=True)
+    for x in forDB_command_help['embeds']:
+        embed.add_field(name=x['title'], value=x['description'], inline=False)
     embed.set_footer(text="Desenvolvido por KNM TEAM")
     await ctx.send(embed=embed)
 
@@ -50,7 +70,8 @@ async def youtube(ctx, *, search):
 # Events
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Streaming(name="Tutorials", url="http://www.twitch.tv/accountname"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="Coding ();"))
+    # await bot.change_presence(activity=discord.Streaming(name="Tutorials", url="http://www.twitch.tv/accountname"))
     print('My Ready is Body')
 
 
