@@ -1,10 +1,6 @@
 import discord
 from discord.ext import commands
-import datetime
 import requests
-
-from urllib import parse, request
-import re
 
 #########################################
 # Import database config                #
@@ -23,6 +19,7 @@ lang_selected = "pt-br"
 forDB_bot_name = database[lang_selected]['name']
 forDB_command_prefix = database[lang_selected]['prefix']
 forDB_description=database[lang_selected]['description']
+forDB_characters=database[lang_selected]['database']['characters']
 
 # Set commands from DB
 forDB_command_help=database[lang_selected]['commands']['help']
@@ -37,6 +34,14 @@ async def help(ctx):
     for x in forDB_command_help['embeds']:
         embed.add_field(name=x['title'], value=x['description'], inline=False)
     embed.set_footer(text="Desenvolvido por KNM TEAM")
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def personagens(ctx):
+    embed=discord.Embed(title=f"[KNM-MANGA] {forDB_bot_name}", url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg", description="Abaixo está a lista com todos os personagens.")
+    embed.set_thumbnail(url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg")
+    for x in forDB_characters:
+        embed.add_field(name=f"{x['id']} - {x['name']}", value=x['type'], inline=False)
     await ctx.send(embed=embed)
 
 # @bot.command()
