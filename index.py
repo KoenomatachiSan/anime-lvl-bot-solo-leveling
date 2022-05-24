@@ -16,6 +16,7 @@ lang_selected = "pt-br"
 #########################################
 # Set config database variables         #
 #########################################
+forDB_thumbnail_image = database[lang_selected]['thumbnail_image']
 forDB_bot_name = database[lang_selected]['name']
 forDB_command_prefix = database[lang_selected]['prefix']
 forDB_description=database[lang_selected]['description']
@@ -28,18 +29,35 @@ bot = commands.Bot(command_prefix=forDB_command_prefix, description=forDB_descri
 bot.remove_command('help')
 
 @bot.command()
-async def help(ctx):
-    embed=discord.Embed(title=f"[KNM-MANGA] {forDB_bot_name}", url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg", description="Wiki bot, com curiosidades e informações a respeito do anime em geral.")
-    embed.set_thumbnail(url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg")
+async def ajuda(ctx):
+    embed=discord.Embed(title=f"[KNM-MANGA] {forDB_bot_name}", url=forDB_thumbnail_image, description=forDB_command_help['header'])
+    embed.set_thumbnail(url=forDB_thumbnail_image)
     for x in forDB_command_help['embeds']:
         embed.add_field(name=x['title'], value=x['description'], inline=False)
-    embed.set_footer(text="Desenvolvido por KNM TEAM")
+    embed.set_footer(text=forDB_command_help['footer'])
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def help(ctx):
+    embed=discord.Embed(title=f"[KNM-MANGA] {forDB_bot_name}", url=forDB_thumbnail_image, description=forDB_command_help['header'])
+    embed.set_thumbnail(url=forDB_thumbnail_image)
+    for x in forDB_command_help['embeds']:
+        embed.add_field(name=x['title'], value=x['description'], inline=False)
+    embed.set_footer(text=forDB_command_help['footer'])
     await ctx.send(embed=embed)
 
 @bot.command()
 async def personagens(ctx):
-    embed=discord.Embed(title=f"[KNM-MANGA] {forDB_bot_name}", url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg", description="Abaixo está a lista com todos os personagens.")
-    embed.set_thumbnail(url="https://images-na.ssl-images-amazon.com/images/I/916fu0VFcnL.jpg")
+    embed=discord.Embed(title=f"[KNM-MANGA] {forDB_bot_name}", url=forDB_thumbnail_image, description="Abaixo está a lista com todos os personagens.")
+    embed.set_thumbnail(url=forDB_thumbnail_image)
+    for x in forDB_characters:
+        embed.add_field(name=f"{x['id']} - {x['name']}", value=x['type'], inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def characters(ctx):
+    embed=discord.Embed(title=f"[KNM-MANGA] {forDB_bot_name}", url=forDB_thumbnail_image, description="Abaixo está a lista com todos os personagens.")
+    embed.set_thumbnail(url=forDB_thumbnail_image)
     for x in forDB_characters:
         embed.add_field(name=f"{x['id']} - {x['name']}", value=x['type'], inline=False)
     await ctx.send(embed=embed)
